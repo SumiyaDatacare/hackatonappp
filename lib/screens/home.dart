@@ -6,10 +6,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xFFF5F6FA),
+      drawer: _buildDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -50,22 +54,268 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildDrawer() {
+    return Drawer(
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            // Drawer Header with User Profile
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.only(top: 50, bottom: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.deepPurple.shade400,
+                    Colors.deepPurple.shade700,
+                  ],
+                ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(color: Colors.white, width: 3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(45),
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey.shade400,
+                        size: 50,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Mason Lee',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'HR Manager',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'mason.lee@company.com',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.white.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Menu Items
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                children: [
+                  _buildDrawerItem(
+                    icon: Icons.dashboard_outlined,
+                    title: 'Dashboard',
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    isSelected: true,
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.people_outline,
+                    title: 'Employees',
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to employees page
+                    },
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.calendar_today_outlined,
+                    title: 'Calendar',
+                    badge: '3',
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to calendar page
+                    },
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.assessment_outlined,
+                    title: 'Reports',
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to reports page
+                    },
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.work_outline,
+                    title: 'Recruitment',
+                    badge: '5',
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to recruitment page
+                    },
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.attach_money_outlined,
+                    title: 'Payroll',
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to payroll page
+                    },
+                  ),
+                  Divider(height: 30, thickness: 1, indent: 20, endIndent: 20),
+                  _buildDrawerItem(
+                    icon: Icons.settings_outlined,
+                    title: 'Settings',
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to settings page
+                    },
+                  ),
+                  _buildDrawerItem(
+                    icon: Icons.help_outline,
+                    title: 'Help & Support',
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to help page
+                    },
+                  ),
+                ],
+              ),
+            ),
+            
+            // Logout Button
+            Container(
+              padding: EdgeInsets.all(20),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+                icon: Icon(Icons.logout, color: Colors.white),
+                label: Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade400,
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    String? badge,
+    bool isSelected = false,
+  }) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.deepPurple.withOpacity(0.1) : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: isSelected ? Colors.deepPurple : Colors.grey.shade700,
+          size: 24,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            color: isSelected ? Colors.deepPurple : Colors.grey.shade800,
+          ),
+        ),
+        trailing: badge != null
+            ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade400,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  badge,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : null,
+        onTap: onTap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
   Widget _buildHeader() {
     return Row(
       children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey.shade300,
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(25),
-            child: Icon(
-              Icons.person,
-              color: Colors.grey.shade600,
-              size: 30,
+        GestureDetector(
+          onTap: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey.shade300,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 5,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Icon(
+                Icons.person,
+                color: Colors.grey.shade600,
+                size: 30,
+              ),
             ),
           ),
         ),
