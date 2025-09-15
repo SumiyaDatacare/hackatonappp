@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
                 // Header with Profile
                 _buildHeader(),
                 SizedBox(height: 30),
-                
+
                 // Today's Overview Section
                 Text(
                   "Today's Overview",
@@ -35,15 +35,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                
+
                 // Overview Cards Grid
                 _buildOverviewCards(),
                 SizedBox(height: 30),
-                
+
                 // Reminders Section
                 _buildRemindersSection(),
                 SizedBox(height: 30),
-                
+
                 // Employees Section
                 _buildEmployeesSection(),
               ],
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            
+
             // Menu Items
             Expanded(
               child: ListView(
@@ -204,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            
+
             // Logout Button
             Container(
               padding: EdgeInsets.all(20),
@@ -246,7 +246,9 @@ class _HomePageState extends State<HomePage> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.deepPurple.withOpacity(0.1) : Colors.transparent,
+        color: isSelected
+            ? Colors.deepPurple.withOpacity(0.1)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
@@ -281,9 +283,7 @@ class _HomePageState extends State<HomePage> {
               )
             : null,
         onTap: onTap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -311,11 +311,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: Icon(
-                Icons.person,
-                color: Colors.grey.shade600,
-                size: 30,
-              ),
+              child: Icon(Icons.person, color: Colors.grey.shade600, size: 30),
             ),
           ),
         ),
@@ -334,10 +330,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Text(
                 'HR manager',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
             ],
           ),
@@ -441,11 +434,7 @@ class _HomePageState extends State<HomePage> {
                   height: 1.3,
                 ),
               ),
-              Icon(
-                icon,
-                color: textColor.withOpacity(0.6),
-                size: 24,
-              ),
+              Icon(icon, color: textColor.withOpacity(0.6), size: 24),
             ],
           ),
           Row(
@@ -556,11 +545,7 @@ class _HomePageState extends State<HomePage> {
               color: iconColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              color: iconColor,
-              size: 20,
-            ),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
           SizedBox(width: 12),
           Expanded(
@@ -578,10 +563,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -604,12 +586,12 @@ class _HomePageState extends State<HomePage> {
             ),
           SizedBox(width: 8),
           Text(
-            title == 'Brand Meeting' ? 'Meeting' : 
-            title == 'Evelyn Kim' ? 'Birthday' : 'Deadline',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey.shade600,
-            ),
+            title == 'Brand Meeting'
+                ? 'Meeting'
+                : title == 'Evelyn Kim'
+                ? 'Birthday'
+                : 'Deadline',
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
           ),
         ],
       ),
@@ -639,7 +621,7 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(height: 10),
         _buildEmployeeItem(
-          name: 'Anil Tanronto',
+          name: 'Anil munhuuu',
           role: 'Product Designer',
           department: 'Design Department',
           avatarColor: Colors.blue,
