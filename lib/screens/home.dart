@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/sidebar_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xFFF5F6FA),
-      drawer: _buildDrawer(),
+      drawer: SidebarDrawer(currentRoute: '/home'),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -24,10 +25,10 @@ class _HomePageState extends State<HomePage> {
                 // Header with Profile
                 _buildHeader(),
                 SizedBox(height: 30),
-
+                
                 // Today's Overview Section
                 Text(
-                  "Today's Overview",
+                  "Өнөөдрийн мэдээ",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -35,255 +36,21 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(height: 20),
-
+                
                 // Overview Cards Grid
                 _buildOverviewCards(),
                 SizedBox(height: 30),
-
+                
                 // Reminders Section
                 _buildRemindersSection(),
                 SizedBox(height: 30),
-
+                
                 // Employees Section
                 _buildEmployeesSection(),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildDrawer() {
-    return Drawer(
-      child: Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            // Drawer Header with User Profile
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(top: 50, bottom: 20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.deepPurple.shade400,
-                    Colors.deepPurple.shade700,
-                  ],
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    width: 90,
-                    height: 90,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      border: Border.all(color: Colors.white, width: 3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 10,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(45),
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.grey.shade400,
-                        size: 50,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Mason Lee',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'HR Manager',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'sumyia@company.com',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Menu Items
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                children: [
-                  _buildDrawerItem(
-                    icon: Icons.dashboard_outlined,
-                    title: 'Dashboard',
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    isSelected: true,
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.people_outline,
-                    title: 'Employees',
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to employees page
-                    },
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.calendar_today_outlined,
-                    title: 'Calendar',
-                    badge: '3',
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to calendar page
-                    },
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.assessment_outlined,
-                    title: 'Reports',
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to reports page
-                    },
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.work_outline,
-                    title: 'Recruitment',
-                    badge: '5',
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to recruitment page
-                    },
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.attach_money_outlined,
-                    title: 'Payroll',
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to payroll page
-                    },
-                  ),
-                  Divider(height: 30, thickness: 1, indent: 20, endIndent: 20),
-                  _buildDrawerItem(
-                    icon: Icons.settings_outlined,
-                    title: 'Settings',
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to settings page
-                    },
-                  ),
-                  _buildDrawerItem(
-                    icon: Icons.help_outline,
-                    title: 'Help & Support',
-                    onTap: () {
-                      Navigator.pop(context);
-                      // Navigate to help page
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // Logout Button
-            Container(
-              padding: EdgeInsets.all(20),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/login');
-                },
-                icon: Icon(Icons.logout, color: Colors.white),
-                label: Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade400,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-    String? badge,
-    bool isSelected = false,
-  }) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? Colors.deepPurple.withOpacity(0.1)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: isSelected ? Colors.deepPurple : Colors.grey.shade700,
-          size: 24,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            color: isSelected ? Colors.deepPurple : Colors.grey.shade800,
-          ),
-        ),
-        trailing: badge != null
-            ? Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade400,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  badge,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-            : null,
-        onTap: onTap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -311,7 +78,11 @@ class _HomePageState extends State<HomePage> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(25),
-              child: Icon(Icons.person, color: Colors.grey.shade600, size: 30),
+              child: Icon(
+                Icons.person,
+                color: Colors.grey.shade600,
+                size: 30,
+              ),
             ),
           ),
         ),
@@ -321,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Mason Lee',
+                'Батсуурь Сумъяа',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -329,8 +100,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Text(
-                'HR manager',
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                'Хөгжүүлэгч',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
               ),
             ],
           ),
@@ -370,36 +144,20 @@ class _HomePageState extends State<HomePage> {
       childAspectRatio: 1.3,
       children: [
         _buildOverviewCard(
-          title: 'Active\nemployee',
-          count: '85',
+          title: 'Нийт ажилчид',
+          count: '44',
           percentage: '+15%',
           color: Color(0xFFF0F1F5),
           textColor: Colors.black87,
           icon: Icons.people_outline,
         ),
         _buildOverviewCard(
-          title: 'Total\nemployee',
-          count: '150',
-          percentage: '+15%',
-          color: Color(0xFFFF6B35),
+          title: 'Өнөөдрийн төлөвлөгөө',
+          count: '15',
+          percentage: '+5%',
+          color: Color.fromARGB(255, 53, 147, 255),
           textColor: Colors.white,
           icon: Icons.groups_outlined,
-        ),
-        _buildOverviewCard(
-          title: 'New hires',
-          count: '8',
-          percentage: '+25%',
-          color: Color(0xFF4ECDC4),
-          textColor: Colors.white,
-          icon: Icons.person_add_outlined,
-        ),
-        _buildOverviewCard(
-          title: 'Reviewed',
-          count: '4',
-          percentage: '+20%',
-          color: Color(0xFFFFE5E5),
-          textColor: Color(0xFFFF6B6B),
-          icon: Icons.rate_review_outlined,
         ),
       ],
     );
@@ -414,7 +172,7 @@ class _HomePageState extends State<HomePage> {
     required IconData icon,
   }) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(20),
@@ -426,39 +184,50 @@ class _HomePageState extends State<HomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: textColor.withOpacity(0.8),
-                  height: 1.3,
+              Flexible(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: textColor.withOpacity(0.8),
+                    height: 1.2,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Icon(icon, color: textColor.withOpacity(0.6), size: 24),
+              Icon(
+                icon,
+                color: textColor.withOpacity(0.6),
+                size: 20,
+              ),
             ],
           ),
+          SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                count,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
+              Flexible(
+                child: Text(
+                  count,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                 decoration: BoxDecoration(
                   color: textColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   percentage,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: textColor,
                     fontWeight: FontWeight.w600,
                   ),
@@ -479,7 +248,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Reminders',
+              'Өнөөдрийн төлөвлөгөө',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -494,28 +263,31 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(height: 10),
         _buildReminderItem(
-          title: 'Brand Meeting',
-          subtitle: 'Today - 11:45 am',
+          title: 'Daily meeting',
+          subtitle: 'Өнөөдөр - 10:00am',
           icon: Icons.videocam_outlined,
           tagText: 'New',
           tagColor: Color(0xFF4ECDC4),
           iconColor: Colors.blue,
+          type: 'Meeting',
         ),
         _buildReminderItem(
-          title: 'Evelyn Kim',
-          subtitle: 'Tomorrow - 2:30 pm',
+          title: 'Мөнхтуяа төрсөн өдөр',
+          subtitle: 'Өнөөдөр - 2:30pm',
           icon: Icons.cake_outlined,
           tagText: 'New',
           tagColor: Color(0xFF4ECDC4),
           iconColor: Colors.pink,
+          type: 'Birthday',
         ),
         _buildReminderItem(
-          title: 'Contract Revision',
-          subtitle: 'Next week - 9:00 am',
+          title: 'Голомт банктай уулзах',
+          subtitle: 'Өнөөдөр - 4:00 pm',
           icon: Icons.calendar_today_outlined,
           tagText: null,
           tagColor: Colors.transparent,
           iconColor: Colors.orange,
+          type: 'Deadline',
         ),
       ],
     );
@@ -528,6 +300,7 @@ class _HomePageState extends State<HomePage> {
     String? tagText,
     required Color tagColor,
     required Color iconColor,
+    required String type,
   }) {
     return Container(
       margin: EdgeInsets.only(bottom: 12),
@@ -545,7 +318,11 @@ class _HomePageState extends State<HomePage> {
               color: iconColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: iconColor, size: 20),
+            child: Icon(
+              icon,
+              color: iconColor,
+              size: 20,
+            ),
           ),
           SizedBox(width: 12),
           Expanded(
@@ -563,7 +340,10 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),
@@ -586,12 +366,11 @@ class _HomePageState extends State<HomePage> {
             ),
           SizedBox(width: 8),
           Text(
-            title == 'Brand Meeting'
-                ? 'Meeting'
-                : title == 'Evelyn Kim'
-                ? 'Birthday'
-                : 'Deadline',
-            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+            type,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade600,
+            ),
           ),
         ],
       ),
@@ -606,7 +385,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Employees',
+              'Ажилчид',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -621,15 +400,15 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(height: 10),
         _buildEmployeeItem(
-          name: 'Anil munhuuu',
-          role: 'Product Designer',
-          department: 'Design Department',
+          name: 'Алтангэрэл',
+          role: 'Хөгжүүлэгч',
+          department: 'СТГ',
           avatarColor: Colors.blue,
         ),
         _buildEmployeeItem(
-          name: 'Jacob Thomas',
-          role: 'Back-end Developer',
-          department: 'Development Department',
+          name: 'Мягмарсүрэн',
+          role: 'Хөгжүүлэгч',
+          department: 'СТГ',
           avatarColor: Colors.orange,
         ),
       ],

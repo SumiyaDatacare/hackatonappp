@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'splash_screen.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
+import 'screens/schedule.dart';
+import 'screens/planning.dart';
+import 'screens/daily.dart';
+import 'screens/newbie.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,6 +31,10 @@ class _MyAppState extends State<MyApp> {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
+        '/schedule': (context) => SchedulePage(),
+        '/planning': (context) => PlanningPage(),
+        '/daily': (context) => DailyPage(),
+        '/newbie': (context) => NewbiePage(),
       },
     );
   }
