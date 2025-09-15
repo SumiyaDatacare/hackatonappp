@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    'mason.lee@company.com',
+                    'sumyia@company.com',
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.white.withOpacity(0.8),
