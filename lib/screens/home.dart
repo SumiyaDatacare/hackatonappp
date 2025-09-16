@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/sidebar_screen.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   @override
@@ -150,6 +152,7 @@ class _HomePageState extends State<HomePage> {
           color: Color(0xFFF0F1F5),
           textColor: Colors.black87,
           icon: Icons.people_outline,
+          route: '/users',
         ),
         _buildOverviewCard(
           title: 'Өнөөдрийн төлөвлөгөө',
@@ -158,20 +161,29 @@ class _HomePageState extends State<HomePage> {
           color: Color.fromARGB(255, 53, 147, 255),
           textColor: Colors.white,
           icon: Icons.groups_outlined,
+          route: '/schedule',
         ),
       ],
     );
   }
 
   Widget _buildOverviewCard({
-    required String title,
-    required String count,
-    required String percentage,
-    required Color color,
-    required Color textColor,
-    required IconData icon,
-  }) {
-    return Container(
+  required String title,
+  required String count,
+  required String percentage,
+  required Color color,
+  required Color textColor,
+  required IconData icon,
+  String? route, // Add optional route
+}) {
+  return InkWell(
+    borderRadius: BorderRadius.circular(20),
+    onTap: () {
+      if (route != null) {
+        Navigator.pushNamed(context, route);
+      }
+    },
+    child: Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: color,
@@ -237,8 +249,9 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildRemindersSection() {
     return Column(

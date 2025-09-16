@@ -7,6 +7,7 @@ import 'screens/mydiscount.dart';
 import 'screens/planning.dart';
 import 'screens/daily.dart';
 import 'screens/newbie.dart';
+import 'screens/users.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,6 +38,7 @@ class _MyAppState extends State<MyApp> {
         '/planning': (context) => PlanningPage(),
         '/daily': (context) => DailyPage(),
         '/newbie': (context) => NewbiePage(),
+        '/users': (context) => UsersPage(),
       },
     );
   }

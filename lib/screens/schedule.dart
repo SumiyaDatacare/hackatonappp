@@ -164,35 +164,139 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       backgroundColor: Color(0xFFF9FAFB),
       drawer: SidebarDrawer(currentRoute: routeName),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        iconTheme: IconThemeData(color: Colors.grey.shade700),
-        title: Text(
-          'Цагийн хуваарь',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(120),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF24A1DE), Color(0xFF1E88C7)],
+            ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFF24A1DE).withOpacity(0.3),
+                blurRadius: 20,
+                offset: Offset(0, 10),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                // Top row with menu and centered title
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Menu button on the left
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Builder(
+                          builder: (BuildContext context) => Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.menu_rounded,
+                                color: Colors.white,
+                              ),
+                              onPressed: () =>
+                                  Scaffold.of(context).openDrawer(),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Centered title
+                      Text(
+                        'Цагийн хуваарь',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Date and event count section
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Date display
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today,
+                            color: Colors.white.withOpacity(0.9),
+                            size: 16,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            '${_getMongolianWeekdayFull(DateTime.now().weekday)}, ${_getMongolianMonth(DateTime.now().month)} ${DateTime.now().day}',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white.withOpacity(0.95),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Event count badge
+                      if (_selectedDay != null)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.25),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.event_note,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                '${_getEventsForDay(_selectedDay!).length}',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh, color: primaryColor),
-            tooltip: 'Шинэчлэх',
-            onPressed: _fetchEvents,
-          ),
-          IconButton(
-            icon: Icon(Icons.today, color: primaryColor),
-            tooltip: 'Өнөөдөр',
-            onPressed: () {
-              setState(() {
-                _focusedDay = DateTime.now();
-                _selectedDay = DateTime.now();
-              });
-            },
-          ),
-        ],
       ),
       body: _isLoading
           ? Center(
@@ -573,7 +677,7 @@ class _SchedulePageState extends State<SchedulePage> {
     if (duration.inHours < 1) {
       return '${duration.inMinutes} минут';
     } else if (duration.inHours == 1) {
-      return '1 hour';
+      return '1 цаг';
     } else {
       return '${duration.inHours} цаг';
     }
@@ -939,6 +1043,19 @@ class _SchedulePageState extends State<SchedulePage> {
   String _getMongolianWeekday(DateTime day) {
     const weekdays = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
     return weekdays[day.weekday - 1];
+  }
+
+  String _getMongolianWeekdayFull(int weekday) {
+    const weekdays = [
+      'Даваа',
+      'Мягмар',
+      'Лхагва',
+      'Пүрэв',
+      'Баасан',
+      'Бямба',
+      'Ням',
+    ];
+    return weekdays[weekday - 1];
   }
 }
 
