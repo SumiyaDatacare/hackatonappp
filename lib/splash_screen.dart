@@ -48,8 +48,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.deepPurple.shade400,
-              Colors.deepPurple.shade800,
+          Color(0xFF24A1DE),
+          Color(0xFF1976D2),
             ],
           ),
         ),
