@@ -1,26 +1,41 @@
 import 'package:flutter/material.dart';
-import '../components/sidebar_screen.dart';
 
-class NewbiePage extends StatelessWidget {
+void main() {
+  runApp(Mydiscount());
+}
+
+class Mydiscount extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Mydiscount App',
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Roboto'),
+      home: MydiscountPage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MydiscountPage extends StatelessWidget {
   final String? title;
 
-  const NewbiePage({Key? key, this.title}) : super(key: key);
+  const MydiscountPage({Key? key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final String routeName = ModalRoute.of(context)?.settings.name ?? '';
 
-    String pageTitle = 'newbie';
+    String pageTitle = 'Mydiscount';
 
     return Scaffold(
       backgroundColor: Color(0xFFF9FAFB),
-      drawer: SidebarDrawer(currentRoute: '/newbie'),
+      drawer: SidebarDrawer(currentRoute: routeName),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
         iconTheme: IconThemeData(color: Colors.grey.shade700),
         title: Text(
-          'Миний хөнгөлөлт',
+          pageTitle,
           style: TextStyle(
             color: Colors.black87,
             fontSize: 20,
@@ -33,81 +48,81 @@ class NewbiePage extends StatelessWidget {
   }
 }
 
-// class SidebarDrawer extends StatelessWidget {
-//   final String currentRoute;
+class SidebarDrawer extends StatelessWidget {
+  final String currentRoute;
 
-//   const SidebarDrawer({Key? key, required this.currentRoute}) : super(key: key);
+  const SidebarDrawer({Key? key, required this.currentRoute}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Drawer(
-//       child: ListView(
-//         padding: EdgeInsets.zero,
-//         children: [
-//           DrawerHeader(
-//             decoration: BoxDecoration(color: Colors.blue),
-//             child: Text(
-//               'Menu',
-//               style: TextStyle(color: Colors.white, fontSize: 24),
-//             ),
-//           ),
-//           _buildDrawerItem(
-//             context,
-//             icon: Icons.home,
-//             title: 'Home',
-//             route: '/home',
-//           ),
-//           _buildDrawerItem(
-//             context,
-//             icon: Icons.discount,
-//             title: 'Mydiscount',
-//             route: '/mydiscount',
-//           ),
-//           _buildDrawerItem(
-//             context,
-//             icon: Icons.person,
-//             title: 'Newbie',
-//             route: '/newbie',
-//           ),
-//           _buildDrawerItem(
-//             context,
-//             icon: Icons.settings,
-//             title: 'Settings',
-//             route: '/settings',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: Colors.blue),
+            child: Text(
+              'Menu',
+              style: TextStyle(color: Colors.white, fontSize: 24),
+            ),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.home,
+            title: 'Home',
+            route: '/home',
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.discount,
+            title: 'Mydiscount',
+            route: '/mydiscount',
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.person,
+            title: 'Newbie',
+            route: '/newbie',
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.settings,
+            title: 'Settings',
+            route: '/settings',
+          ),
+        ],
+      ),
+    );
+  }
 
-//   Widget _buildDrawerItem(
-//     BuildContext context, {
-//     required IconData icon,
-//     required String title,
-//     required String route,
-//   }) {
-//     bool isSelected = currentRoute == route;
+  Widget _buildDrawerItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String route,
+  }) {
+    bool isSelected = currentRoute == route;
 
-//     return ListTile(
-//       leading: Icon(
-//         icon,
-//         color: isSelected ? Colors.blue : Colors.grey.shade600,
-//       ),
-//       title: Text(
-//         title,
-//         style: TextStyle(
-//           color: isSelected ? Colors.blue : Colors.black87,
-//           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-//         ),
-//       ),
-//       selected: isSelected,
-//       onTap: () {
-//         Navigator.pop(context);
-//         // Add navigation logic here
-//       },
-//     );
-//   }
-// }
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: isSelected ? Colors.blue : Colors.grey.shade600,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isSelected ? Colors.blue : Colors.black87,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        ),
+      ),
+      selected: isSelected,
+      onTap: () {
+        Navigator.pop(context);
+        // Add navigation logic here
+      },
+    );
+  }
+}
 
 class TaskListScreen extends StatefulWidget {
   @override

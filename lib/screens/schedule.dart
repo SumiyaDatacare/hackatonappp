@@ -4,7 +4,7 @@ import '../components/sidebar_screen.dart';
 
 class SchedulePage extends StatefulWidget {
   final String? title;
-  
+
   const SchedulePage({Key? key, this.title}) : super(key: key);
 
   @override
@@ -16,14 +16,14 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   TimeOfDay selectedTime = TimeOfDay.now();
-  
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   String selectedType = 'Meeting';
-  
+
   // Events storage
   Map<DateTime, List<Event>> _events = {};
-  
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +31,7 @@ class _SchedulePageState extends State<SchedulePage> {
     final today = DateTime.now();
     final tomorrow = today.add(Duration(days: 1));
     final nextWeek = today.add(Duration(days: 7));
-   _events = {
+    _events = {
       DateTime(today.year, today.month, today.day): [
         Event('Багийн хурал', 'Хурал', '10:00'),
         Event('Төслийн үнэлгээ', 'Үнэлгээ', '14:00'),
@@ -47,14 +47,14 @@ class _SchedulePageState extends State<SchedulePage> {
       ],
     };
   }
-  
+
   @override
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
-  
+
   List<Event> _getEventsForDay(DateTime day) {
     return _events[DateTime(day.year, day.month, day.day)] ?? [];
   }
@@ -63,7 +63,7 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget build(BuildContext context) {
     final String routeName = ModalRoute.of(context)?.settings.name ?? '';
     final primaryColor = Color(0xFF24A1DE);
-    
+
     return Scaffold(
       backgroundColor: Color(0xFFF9FAFB),
       drawer: SidebarDrawer(currentRoute: routeName),
@@ -147,15 +147,23 @@ class _SchedulePageState extends State<SchedulePage> {
                       formatButtonDecoration: BoxDecoration(
                         color: primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: primaryColor.withOpacity(0.3)),
+                        border: Border.all(
+                          color: primaryColor.withOpacity(0.3),
+                        ),
                       ),
                       formatButtonTextStyle: TextStyle(
                         color: primaryColor,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
-                      leftChevronIcon: Icon(Icons.chevron_left, color: primaryColor),
-                      rightChevronIcon: Icon(Icons.chevron_right, color: primaryColor),
+                      leftChevronIcon: Icon(
+                        Icons.chevron_left,
+                        color: primaryColor,
+                      ),
+                      rightChevronIcon: Icon(
+                        Icons.chevron_right,
+                        color: primaryColor,
+                      ),
                       titleTextStyle: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
@@ -164,14 +172,17 @@ class _SchedulePageState extends State<SchedulePage> {
                     calendarBuilders: CalendarBuilders(
                       dowBuilder: (context, day) {
                         final text = _getMongolianWeekday(day);
-                        final isWeekend = day.weekday == DateTime.saturday || 
-                                         day.weekday == DateTime.sunday;
-                        
+                        final isWeekend =
+                            day.weekday == DateTime.saturday ||
+                            day.weekday == DateTime.sunday;
+
                         return Center(
                           child: Text(
                             text,
                             style: TextStyle(
-                              color: isWeekend ? Colors.red : Colors.grey.shade700,
+                              color: isWeekend
+                                  ? Colors.red
+                                  : Colors.grey.shade700,
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                             ),
@@ -212,10 +223,9 @@ class _SchedulePageState extends State<SchedulePage> {
                   ),
                 ),
               ),
-              
+
               SizedBox(height: 25),
-              
-              
+
               // Selected Day Events
               if (_selectedDay != null) ...[
                 Text(
@@ -233,7 +243,7 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
         ),
       ),
-      
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // _showQuickAddDialog(context);
@@ -244,16 +254,14 @@ class _SchedulePageState extends State<SchedulePage> {
       ),
     );
   }
-  
+
   Widget _buildSelectedDayEvents() {
     final events = _getEventsForDay(_selectedDay!);
-    
+
     if (events.isEmpty) {
       return Card(
         elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Center(
@@ -267,10 +275,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 SizedBox(height: 10),
                 Text(
                   'No events scheduled',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                 ),
               ],
             ),
@@ -278,185 +283,184 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
       );
     }
-    
+
     return Column(
-      children: events.map((event) => Card(
-        elevation: 1,
-        margin: EdgeInsets.only(bottom: 10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListTile(
-          leading: Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              color: _getEventColor(event.type).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
+      children: events
+          .map(
+            (event) => Card(
+              elevation: 1,
+              margin: EdgeInsets.only(bottom: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                leading: Container(
+                  width: 45,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: _getEventColor(event.type).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    _getEventIcon(event.type),
+                    color: _getEventColor(event.type),
+                  ),
+                ),
+                title: Text(
+                  event.title,
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                ),
+                subtitle: Text('${event.time} • ${event.type}'),
+                trailing: IconButton(
+                  icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
+                  onPressed: () => _deleteEvent(event),
+                ),
+              ),
             ),
-            child: Icon(
-              _getEventIcon(event.type),
-              color: _getEventColor(event.type),
-            ),
-          ),
-          title: Text(
-            event.title,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
-          ),
-          subtitle: Text('${event.time} • ${event.type}'),
-          trailing: IconButton(
-            icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
-            onPressed: () => _deleteEvent(event),
-          ),
-        ),
-      )).toList(),
+          )
+          .toList(),
     );
   }
-  
+
   void _showAddEventDialog(BuildContext context) {
-  final primaryColor = const Color(0xFF24A1DE);
+    final primaryColor = const Color(0xFF24A1DE);
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  labelText: 'Төлөвлөгөө',
-                  hintText: 'Нэр оруулна уу',
-                  prefixIcon: Icon(Icons.event_note, color: primaryColor),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Type
-              DropdownButtonFormField<String>(
-                value: selectedType,
-                decoration: InputDecoration(
-                  labelText: 'Төрөл',
-                  prefixIcon: Icon(Icons.category, color: primaryColor),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                items: ['Meeting', 'Birthday', 'Deadline', 'Review', 'Other']
-                    .map((type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedType = value!;
-                  });
-                },
-              ),
-              const SizedBox(height: 12),
-
-              // Date & Time
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => _selectDate(context),
-                      child: InputDecorator(
-                        decoration: InputDecoration(
-                          labelText: 'Огноо',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text(
-                          '${_selectedDay?.day ?? _focusedDay.day}/${_selectedDay?.month ?? _focusedDay.month}',
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => _selectTime(context),
-                      child: InputDecorator(
-                        decoration: InputDecoration(
-                          labelText: 'Цаг',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text(
-                          selectedTime.format(context),
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Description
-              TextFormField(
-                controller: descriptionController,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  labelText: 'Тайлбар',
-                  hintText: 'Тайлбар оруулна уу',
-                  prefixIcon: Icon(Icons.description, color: primaryColor),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Button
-              SizedBox(
-                width: double.infinity,
-                height: 44,
-                child: ElevatedButton(
-                  onPressed: () {
-                    _addEvent();
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    labelText: 'Төлөвлөгөө',
+                    hintText: 'Нэр оруулна уу',
+                    prefixIcon: Icon(Icons.event_note, color: primaryColor),
+                    border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    elevation: 1,
-                  ),
-                  child: const Text(
-                    'Нэмэх',
-                    style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+
+                // Type
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  decoration: InputDecoration(
+                    labelText: 'Төрөл',
+                    prefixIcon: Icon(Icons.category, color: primaryColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  items: ['Meeting', 'Birthday', 'Deadline', 'Review', 'Other']
+                      .map(
+                        (type) =>
+                            DropdownMenuItem(value: type, child: Text(type)),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedType = value!;
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // Date & Time
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => _selectDate(context),
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: 'Огноо',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            '${_selectedDay?.day ?? _focusedDay.day}/${_selectedDay?.month ?? _focusedDay.month}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => _selectTime(context),
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: 'Цаг',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            selectedTime.format(context),
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Description
+                TextFormField(
+                  controller: descriptionController,
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    labelText: 'Тайлбар',
+                    hintText: 'Тайлбар оруулна уу',
+                    prefixIcon: Icon(Icons.description, color: primaryColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 44,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _addEvent();
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 1,
+                    ),
+                    child: const Text(
+                      'Нэмэх',
+                      style: TextStyle(fontSize: 15, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
-
-  
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -466,9 +470,7 @@ class _SchedulePageState extends State<SchedulePage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Color(0xFF24A1DE),
-            ),
+            colorScheme: ColorScheme.light(primary: Color(0xFF24A1DE)),
           ),
           child: child!,
         );
@@ -481,7 +483,7 @@ class _SchedulePageState extends State<SchedulePage> {
       });
     }
   }
-  
+
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -489,9 +491,7 @@ class _SchedulePageState extends State<SchedulePage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Color(0xFF24A1DE),
-            ),
+            colorScheme: ColorScheme.light(primary: Color(0xFF24A1DE)),
           ),
           child: child!,
         );
@@ -503,12 +503,12 @@ class _SchedulePageState extends State<SchedulePage> {
       });
     }
   }
-  
+
   void _addEvent() {
     if (titleController.text.isNotEmpty) {
       final date = _selectedDay ?? _focusedDay;
       final normalizedDate = DateTime(date.year, date.month, date.day);
-      
+
       setState(() {
         if (!_events.containsKey(normalizedDate)) {
           _events[normalizedDate] = [];
@@ -523,7 +523,7 @@ class _SchedulePageState extends State<SchedulePage> {
         titleController.clear();
         descriptionController.clear();
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Event added successfully'),
@@ -532,22 +532,19 @@ class _SchedulePageState extends State<SchedulePage> {
       );
     }
   }
-  
+
   void _deleteEvent(Event event) {
     setState(() {
       final date = _selectedDay ?? _focusedDay;
       final normalizedDate = DateTime(date.year, date.month, date.day);
       _events[normalizedDate]?.remove(event);
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Event deleted'),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text('Event deleted'), backgroundColor: Colors.red),
     );
   }
-  
+
   Color _getEventColor(String type) {
     switch (type) {
       case 'Meeting':
@@ -562,7 +559,7 @@ class _SchedulePageState extends State<SchedulePage> {
         return Colors.grey;
     }
   }
-  
+
   IconData _getEventIcon(String type) {
     switch (type) {
       case 'Meeting':
@@ -579,84 +576,84 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 }
 
-
 String _getMongolianMonth(int month) {
-    const months = [
-      'Нэгдүгээр сар',
-      'Хоёрдугаар сар',
-      'Гуравдугаар сар',
-      'Дөрөвдүгээр сар',
-      'Тавдугаар сар',
-      'Зургадугаар сар',
-      'Долдугаар сар',
-      'Наймдугаар сар',
-      'Есдүгээр сар',
-      'Аравдугаар сар',
-      'Арван нэгдүгээр сар',
-      'Арван хоёрдугаар сар',
-    ];
-    return months[month - 1];
+  const months = [
+    'Нэгдүгээр сар',
+    'Хоёрдугаар сар',
+    'Гуравдугаар сар',
+    'Дөрөвдүгээр сар',
+    'Тавдугаар сар',
+    'Зургадугаар сар',
+    'Долдугаар сар',
+    'Наймдугаар сар',
+    'Есдүгээр сар',
+    'Аравдугаар сар',
+    'Арван нэгдүгээр сар',
+    'Арван хоёрдугаар сар',
+  ];
+  return months[month - 1];
+}
+
+String _getMongolianWeekday(DateTime day) {
+  const weekdays = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
+  return weekdays[day.weekday - 1];
+}
+
+String _getMongolianWeekdayFull(int weekday) {
+  const weekdays = [
+    'Даваа гараг',
+    'Мягмар гараг',
+    'Лхагва гараг',
+    'Пүрэв гараг',
+    'Баасан гараг',
+    'Бямба гараг',
+    'Ням гараг',
+  ];
+  return weekdays[weekday - 1];
+}
+
+Color _getEventColor(String type) {
+  switch (type) {
+    case 'Хурал':
+      return Color(0xFF24A1DE);
+    case 'Төрсөн өдөр':
+      return Colors.pink;
+    case 'Хугацаа':
+      return Colors.red;
+    case 'Үнэлгээ':
+      return Colors.orange;
+    case 'Сургалт':
+      return Colors.green;
+    default:
+      return Colors.grey;
   }
-  
-  String _getMongolianWeekday(DateTime day) {
-    const weekdays = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
-    return weekdays[day.weekday - 1];
+}
+
+IconData _getEventIcon(String type) {
+  switch (type) {
+    case 'Хурал':
+      return Icons.people;
+    case 'Төрсөн өдөр':
+      return Icons.cake;
+    case 'Хугацаа':
+      return Icons.alarm;
+    case 'Үнэлгээ':
+      return Icons.rate_review;
+    case 'Сургалт':
+      return Icons.school;
+    default:
+      return Icons.event;
   }
-  
-  String _getMongolianWeekdayFull(int weekday) {
-    const weekdays = [
-      'Даваа гараг',
-      'Мягмар гараг',
-      'Лхагва гараг',
-      'Пүрэв гараг',
-      'Баасан гараг',
-      'Бямба гараг',
-      'Ням гараг',
-    ];
-    return weekdays[weekday - 1];
-  }
-  
-  Color _getEventColor(String type) {
-    switch (type) {
-      case 'Хурал':
-        return Color(0xFF24A1DE);
-      case 'Төрсөн өдөр':
-        return Colors.pink;
-      case 'Хугацаа':
-        return Colors.red;
-      case 'Үнэлгээ':
-        return Colors.orange;
-      case 'Сургалт':
-        return Colors.green;
-      default:
-        return Colors.grey;
-    }
-  }
-  
-  IconData _getEventIcon(String type) {
-    switch (type) {
-      case 'Хурал':
-        return Icons.people;
-      case 'Төрсөн өдөр':
-        return Icons.cake;
-      case 'Хугацаа':
-        return Icons.alarm;
-      case 'Үнэлгээ':
-        return Icons.rate_review;
-      case 'Сургалт':
-        return Icons.school;
-      default:
-        return Icons.event;
-    }
-  }
+}
+
 // Event Model Class
 class Event {
   final String title;
   final String type;
   final String time;
-  
+
   Event(this.title, this.type, this.time);
-  
+
   @override
   String toString() => title;
 }
