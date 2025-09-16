@@ -68,7 +68,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
                 children: [
                   //Reports - Simple menu
                   _buildSimpleMenuItem(
-                    icon: Icons.bar_chart_outlined,
+                    icon: Icons.home_work_outlined,
                     iconColor: Color(0xFF4285F4),
                     title: 'Нүүр хуудас',
                     isSelected: widget.currentRoute == '/reports',

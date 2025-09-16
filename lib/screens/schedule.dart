@@ -809,7 +809,7 @@ class _SchedulePageState extends State<SchedulePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill in all required fields'),
-          backgroundColor: Colors.red,
+          backgroundColor: Color.fromARGB(255, 255, 255, 255),
         ),
       );
       return;
@@ -847,12 +847,6 @@ class _SchedulePageState extends State<SchedulePage> {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         // Successfully added
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Event added successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
 
         // Refresh event list from API
         _fetchEvents();
@@ -860,6 +854,14 @@ class _SchedulePageState extends State<SchedulePage> {
         // Clear form
         titleController.clear();
         descriptionController.clear();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Таньд мэдэгдэл ирлээ!'),
+            backgroundColor: Color(0xFF24A1DE),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       } else {
         throw Exception('Failed to add event: ${response.body}');
       }

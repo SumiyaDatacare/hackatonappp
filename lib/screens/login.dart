@@ -230,7 +230,7 @@ class _LoginPageState extends State<LoginPage>
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade900,
+                        color: blueColor,
                         letterSpacing: -0.5,
                       ),
                     ),
@@ -261,9 +261,11 @@ class _LoginPageState extends State<LoginPage>
                           children: [
                             // Email Field
                             Container(
+                              height: 46,
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade50,
                                 borderRadius: BorderRadius.circular(16),
+
                                 border: Border.all(
                                   color: Colors.grey.shade200,
                                   width: 1,
@@ -274,12 +276,13 @@ class _LoginPageState extends State<LoginPage>
                                 keyboardType: TextInputType.emailAddress,
                                 style: TextStyle(fontSize: 16),
                                 decoration: InputDecoration(
-                                  labelText: 'Нэвтрэх нэр',
+                                  hintText: 'Нэвтрэх нэр',
+                                  // placeholder: 'Нэвтрэх нэр',
                                   labelStyle: TextStyle(
                                     color: Colors.grey.shade600,
-                                    fontSize: 14,
+                                    fontSize: 12,
                                   ),
-                                  hintText: 'Нэвтрэх нэрээ оруулна уу',
+                                  // hintText: 'Нэвтрэх нэрээ оруулна уу',
                                   hintStyle: TextStyle(
                                     color: Colors.grey.shade400,
                                     fontSize: 14,
@@ -288,7 +291,7 @@ class _LoginPageState extends State<LoginPage>
                                     padding: EdgeInsets.all(12),
                                     child: Icon(
                                       Icons.email_outlined,
-                                      color: blueColor,
+                                      color: Color(0xFF4285F4),
                                       size: 22,
                                     ),
                                   ),
@@ -310,6 +313,7 @@ class _LoginPageState extends State<LoginPage>
 
                             // Password Field
                             Container(
+                              height: 46,
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade50,
                                 borderRadius: BorderRadius.circular(16),
@@ -323,12 +327,12 @@ class _LoginPageState extends State<LoginPage>
                                 obscureText: !_isPasswordVisible,
                                 style: TextStyle(fontSize: 16),
                                 decoration: InputDecoration(
-                                  labelText: 'Нууц үг',
+                                  hintText: 'Нууц үг',
                                   labelStyle: TextStyle(
                                     color: Colors.grey.shade600,
                                     fontSize: 14,
                                   ),
-                                  hintText: 'Нууц үгээ оруулна уу',
+                                  // hintText: 'Нууц үгээ оруулна уу',
                                   hintStyle: TextStyle(
                                     color: Colors.grey.shade400,
                                     fontSize: 14,
@@ -337,7 +341,7 @@ class _LoginPageState extends State<LoginPage>
                                     padding: EdgeInsets.all(12),
                                     child: Icon(
                                       Icons.lock_outline,
-                                      color: blueColor,
+                                      color: Color(0xFF4285F4),
                                       size: 22,
                                     ),
                                   ),
@@ -382,8 +386,8 @@ class _LoginPageState extends State<LoginPage>
                                 Row(
                                   children: [
                                     SizedBox(
-                                      height: 20,
-                                      width: 20,
+                                      height: 8,
+                                      width: 8,
                                       child: Checkbox(
                                         value: false,
                                         onChanged: (value) {},
@@ -400,7 +404,7 @@ class _LoginPageState extends State<LoginPage>
                                       'Сануулах',
                                       style: TextStyle(
                                         color: Colors.grey.shade600,
-                                        fontSize: 14,
+                                        fontSize: 12,
                                       ),
                                     ),
                                   ],
@@ -447,7 +451,7 @@ class _LoginPageState extends State<LoginPage>
                               child: ElevatedButton(
                                 onPressed: _isLoading ? null : _handleLogin,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
+                                  backgroundColor: Color(0xFF4285F4),
                                   shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
