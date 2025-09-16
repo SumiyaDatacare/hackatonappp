@@ -72,7 +72,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
                     iconColor: Color(0xFF4285F4),
                     title: 'Нүүр хуудас',
                     isSelected: widget.currentRoute == '/reports',
-                    route: '/lib/screens/login.dart',
+                    route: '/home',
                   ),
                   SizedBox(height: 4),
                   // Strategies with submenu - Blue
@@ -153,10 +153,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
                         title: 'Утасны дугаар',
                         route: '/assets/phone-numbers',
                       ),
-                      SubMenuItem(
-                        title: 'Ажлын хуваарь',
-                        route: '/schedule',
-                      ),
+                      SubMenuItem(title: 'Ажлын хуваарь', route: '/schedule'),
                       SubMenuItem(
                         title: 'Мэдэгдлүүд',
                         route: '/assets/notifications',
