@@ -114,10 +114,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
                         title: 'Ажлын байрны хөтөч',
                         route: '/boosting/facebook',
                       ),
-                      SubMenuItem(
-                        title: 'Хөнгөлөлтүүд',
-                        route: '/boosting/instagram',
-                      ),
+                      SubMenuItem(title: 'Хөнгөлөлтүүд', route: '/newbie'),
                       SubMenuItem(
                         title: 'Сургалтууд',
                         route: '/boosting/instagram',

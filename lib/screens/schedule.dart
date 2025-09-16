@@ -6,7 +6,7 @@ import '../components/sidebar_screen.dart';
 
 class SchedulePage extends StatefulWidget {
   final String? title;
-  
+
   const SchedulePage({Key? key, this.title}) : super(key: key);
 
   @override
@@ -18,19 +18,18 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   TimeOfDay selectedTime = TimeOfDay.now();
-  
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   String selectedType = 'meeting';
   List<String> selectedAttendees = [];
   List<Map<String, dynamic>> users = [];
 
-  
   // Events storage
   Map<DateTime, List<Event>> _events = {};
   bool _isLoading = true;
   String? _errorMessage;
-  
+
   @override
   void initState() {
     super.initState();
@@ -38,20 +37,22 @@ class _SchedulePageState extends State<SchedulePage> {
     _fetchEvents();
     _fetchUsers();
   }
-  
+
   Future<void> _fetchUsers() async {
-  try {
-    final response = await http.get(Uri.parse('http://10.150.10.17:5000/api/users'));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      setState(() {
-        users = List<Map<String, dynamic>>.from(data['data']);
-      });
+    try {
+      final response = await http.get(
+        Uri.parse('http://10.150.10.17:5000/api/users'),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          users = List<Map<String, dynamic>>.from(data['data']);
+        });
+      }
+    } catch (e) {
+      print("Error fetching users: $e");
     }
-  } catch (e) {
-    print("Error fetching users: $e");
   }
-}
 
   // Fetch events from API
   Future<void> _fetchEvents() async {
@@ -59,54 +60,61 @@ class _SchedulePageState extends State<SchedulePage> {
       _isLoading = true;
       _errorMessage = null;
     });
-    
+
     try {
       final response = await http.get(
         Uri.parse('http://10.150.10.17:5000/api/events'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       );
-      
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        
+
         if (responseData['success'] == true) {
           final List<dynamic> eventsData = responseData['data'];
-          
+
           // Clear existing events
           _events.clear();
-          
+
           // Process each event from API
           for (var eventData in eventsData) {
-            final DateTime startDate = DateTime.parse(eventData['startDate']).toLocal();
-            final DateTime normalizedDate = DateTime(startDate.year, startDate.month, startDate.day);
-            
+            final DateTime startDate = DateTime.parse(
+              eventData['startDate'],
+            ).toLocal();
+            final DateTime normalizedDate = DateTime(
+              startDate.year,
+              startDate.month,
+              startDate.day,
+            );
+
             final event = Event(
               id: eventData['_id'],
               title: eventData['title'],
               description: eventData['description'] ?? '',
               type: eventData['eventType'] ?? 'other',
-              time: '${startDate.hour.toString().padLeft(2, '0')}:${startDate.minute.toString().padLeft(2, '0')}',
+              time:
+                  '${startDate.hour.toString().padLeft(2, '0')}:${startDate.minute.toString().padLeft(2, '0')}',
               startDate: startDate,
               endDate: DateTime.parse(eventData['endDate']).toLocal(),
               location: eventData['location'] ?? '',
-              organizer: eventData['organizer'] != null 
-                ? Organizer.fromJson(eventData['organizer'])
-                : null,
-              attendees: (eventData['attendees'] as List?)
-                ?.map((a) => Attendee.fromJson(a))
-                .toList() ?? [],
+              organizer: eventData['organizer'] != null
+                  ? Organizer.fromJson(eventData['organizer'])
+                  : null,
+              attendees:
+                  (eventData['attendees'] as List?)
+                      ?.map((a) => Attendee.fromJson(a))
+                      .toList() ??
+                  [],
               maxAttendees: eventData['maxAttendees'] ?? 0,
               isActive: eventData['isActive'] ?? true,
             );
-            
+
             if (!_events.containsKey(normalizedDate)) {
               _events[normalizedDate] = [];
             }
             _events[normalizedDate]!.add(event);
           }
-          
+
           setState(() {
             _isLoading = false;
           });
@@ -121,7 +129,7 @@ class _SchedulePageState extends State<SchedulePage> {
         _isLoading = false;
         _errorMessage = 'Error loading events: ${e.toString()}';
       });
-      
+
       // Show error snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -136,14 +144,14 @@ class _SchedulePageState extends State<SchedulePage> {
       );
     }
   }
-  
+
   @override
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
-  
+
   List<Event> _getEventsForDay(DateTime day) {
     return _events[DateTime(day.year, day.month, day.day)] ?? [];
   }
@@ -152,7 +160,7 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget build(BuildContext context) {
     final String routeName = ModalRoute.of(context)?.settings.name ?? '';
     final primaryColor = Color(0xFF24A1DE);
-    
+
     return Scaffold(
       backgroundColor: Color(0xFFF9FAFB),
       drawer: SidebarDrawer(currentRoute: routeName),
@@ -187,171 +195,185 @@ class _SchedulePageState extends State<SchedulePage> {
         ],
       ),
       body: _isLoading
-        ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(color: primaryColor),
-                SizedBox(height: 16),
-                Text(
-                  'Loading events...',
-                  style: TextStyle(color: Colors.grey.shade600),
-                ),
-              ],
-            ),
-          )
-        : SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(20),
+          ? Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Calendar Card with table_calendar
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: TableCalendar<Event>(
-                        firstDay: DateTime.utc(2020, 1, 1),
-                        lastDay: DateTime.utc(2030, 12, 31),
-                        focusedDay: _focusedDay,
-                        calendarFormat: _calendarFormat,
-                        selectedDayPredicate: (day) {
-                          return isSameDay(_selectedDay, day);
-                        },
-                        eventLoader: _getEventsForDay,
-                        startingDayOfWeek: StartingDayOfWeek.monday,
-                        calendarStyle: CalendarStyle(
-                          outsideDaysVisible: false,
-                          selectedDecoration: BoxDecoration(
-                            color: primaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                          todayDecoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          markerDecoration: BoxDecoration(
-                            color: Colors.orange,
-                            shape: BoxShape.circle,
-                          ),
-                          markersMaxCount: 3,
-                          markerSize: 6,
-                          markerMargin: EdgeInsets.symmetric(horizontal: 0.5),
-                          weekendTextStyle: TextStyle(color: Colors.red),
-                        ),
-                        daysOfWeekStyle: DaysOfWeekStyle(
-                          weekdayStyle: TextStyle(fontSize: 13),
-                          weekendStyle: TextStyle(fontSize: 13, color: Colors.red),
-                        ),
-                        headerStyle: HeaderStyle(
-                          formatButtonVisible: true,
-                          titleCentered: true,
-                          formatButtonShowsNext: false,
-                          formatButtonDecoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: primaryColor.withOpacity(0.3)),
-                          ),
-                          formatButtonTextStyle: TextStyle(
-                            color: primaryColor,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          leftChevronIcon: Icon(Icons.chevron_left, color: primaryColor),
-                          rightChevronIcon: Icon(Icons.chevron_right, color: primaryColor),
-                          titleTextStyle: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        calendarBuilders: CalendarBuilders(
-                          dowBuilder: (context, day) {
-                            final text = _getMongolianWeekday(day);
-                            final isWeekend = day.weekday == DateTime.saturday || 
-                                           day.weekday == DateTime.sunday;
-                            
-                            return Center(
-                              child: Text(
-                                text,
-                                style: TextStyle(
-                                  color: isWeekend ? Colors.red : Colors.grey.shade700,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            );
-                          },
-                          headerTitleBuilder: (context, day) {
-                            return Center(
-                              child: Text(
-                                '${_getMongolianMonth(day.month)} ${day.year}',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            _selectedDay = selectedDay;
-                            _focusedDay = focusedDay;
-                          });
-                        },
-                        onFormatChanged: (format) {
-                          setState(() {
-                            _calendarFormat = format;
-                          });
-                        },
-                        onPageChanged: (focusedDay) {
-                          _focusedDay = focusedDay;
-                        },
-                        availableCalendarFormats: const {
-                          CalendarFormat.month: 'Сар',
-                          CalendarFormat.twoWeeks: '2 долоо хоног',
-                          CalendarFormat.week: 'Долоо хоног',
-                        },
-                      ),
-                    ),
+                  CircularProgressIndicator(color: primaryColor),
+                  SizedBox(height: 16),
+                  Text(
+                    'Loading events...',
+                    style: TextStyle(color: Colors.grey.shade600),
                   ),
-                  
-                  SizedBox(height: 25),
-                  
-                  // Selected Day Events
-                  if (_selectedDay != null) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Events on ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        Text(
-                          '${_getEventsForDay(_selectedDay!).length} events',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    _buildSelectedDayEvents(),
-                  ],
                 ],
               ),
+            )
+          : SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Calendar Card with table_calendar
+                    Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: TableCalendar<Event>(
+                          firstDay: DateTime.utc(2020, 1, 1),
+                          lastDay: DateTime.utc(2030, 12, 31),
+                          focusedDay: _focusedDay,
+                          calendarFormat: _calendarFormat,
+                          selectedDayPredicate: (day) {
+                            return isSameDay(_selectedDay, day);
+                          },
+                          eventLoader: _getEventsForDay,
+                          startingDayOfWeek: StartingDayOfWeek.monday,
+                          calendarStyle: CalendarStyle(
+                            outsideDaysVisible: false,
+                            selectedDecoration: BoxDecoration(
+                              color: primaryColor,
+                              shape: BoxShape.circle,
+                            ),
+                            todayDecoration: BoxDecoration(
+                              color: primaryColor.withOpacity(0.3),
+                              shape: BoxShape.circle,
+                            ),
+                            markerDecoration: BoxDecoration(
+                              color: Colors.orange,
+                              shape: BoxShape.circle,
+                            ),
+                            markersMaxCount: 3,
+                            markerSize: 6,
+                            markerMargin: EdgeInsets.symmetric(horizontal: 0.5),
+                            weekendTextStyle: TextStyle(color: Colors.red),
+                          ),
+                          daysOfWeekStyle: DaysOfWeekStyle(
+                            weekdayStyle: TextStyle(fontSize: 13),
+                            weekendStyle: TextStyle(
+                              fontSize: 13,
+                              color: Colors.red,
+                            ),
+                          ),
+                          headerStyle: HeaderStyle(
+                            formatButtonVisible: true,
+                            titleCentered: true,
+                            formatButtonShowsNext: false,
+                            formatButtonDecoration: BoxDecoration(
+                              color: primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: primaryColor.withOpacity(0.3),
+                              ),
+                            ),
+                            formatButtonTextStyle: TextStyle(
+                              color: primaryColor,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            leftChevronIcon: Icon(
+                              Icons.chevron_left,
+                              color: primaryColor,
+                            ),
+                            rightChevronIcon: Icon(
+                              Icons.chevron_right,
+                              color: primaryColor,
+                            ),
+                            titleTextStyle: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          calendarBuilders: CalendarBuilders(
+                            dowBuilder: (context, day) {
+                              final text = _getMongolianWeekday(day);
+                              final isWeekend =
+                                  day.weekday == DateTime.saturday ||
+                                  day.weekday == DateTime.sunday;
+
+                              return Center(
+                                child: Text(
+                                  text,
+                                  style: TextStyle(
+                                    color: isWeekend
+                                        ? Colors.red
+                                        : Colors.grey.shade700,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              );
+                            },
+                            headerTitleBuilder: (context, day) {
+                              return Center(
+                                child: Text(
+                                  '${_getMongolianMonth(day.month)} ${day.year}',
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              _focusedDay = focusedDay;
+                            });
+                          },
+                          onFormatChanged: (format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          },
+                          onPageChanged: (focusedDay) {
+                            _focusedDay = focusedDay;
+                          },
+                          availableCalendarFormats: const {
+                            CalendarFormat.month: 'Сар',
+                            CalendarFormat.twoWeeks: '2 долоо хоног',
+                            CalendarFormat.week: 'Долоо хоног',
+                          },
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 25),
+
+                    // Selected Day Events
+                    if (_selectedDay != null) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Events on ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Text(
+                            '${_getEventsForDay(_selectedDay!).length} events',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      _buildSelectedDayEvents(),
+                    ],
+                  ],
+                ),
+              ),
             ),
-          ),
-      
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showAddEventDialog(context);
@@ -361,16 +383,14 @@ class _SchedulePageState extends State<SchedulePage> {
       ),
     );
   }
-  
+
   Widget _buildSelectedDayEvents() {
     final events = _getEventsForDay(_selectedDay!);
-    
+
     if (events.isEmpty) {
       return Card(
         elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Center(
@@ -384,10 +404,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 SizedBox(height: 10),
                 Text(
                   'Төлөвлөгөө хоосон байна',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                 ),
               ],
             ),
@@ -395,130 +412,162 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
       );
     }
-    
+
     return Column(
-      children: events.map((event) => Card(
-        // elevation: 1,
-        margin: EdgeInsets.only(bottom: 10),
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(12),
-        // ),
-        child: ExpansionTile(
-          leading: Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              color: _getEventColor(event.type).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              _getEventIcon(event.type),
-              color: _getEventColor(event.type),
-            ),
-          ),
-          title: Text(
-            event.title,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${event.time} • ${_getEventTypeDisplay(event.type)}'),
-              if (event.location.isNotEmpty)
-                Text(
-                  '${event.location}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+      children: events
+          .map(
+            (event) => Card(
+              // elevation: 1,
+              margin: EdgeInsets.only(bottom: 10),
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.circular(12),
+              // ),
+              child: ExpansionTile(
+                leading: Container(
+                  width: 45,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: _getEventColor(event.type).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    _getEventIcon(event.type),
+                    color: _getEventColor(event.type),
+                  ),
                 ),
-            ],
-          ),
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (event.description.isNotEmpty) ...[
-                    Text(
-                      'Тайлбар:',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      event.description,
-                      style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
-                    ),
-                    SizedBox(height: 12),
-                  ],
-                  if (event.organizer != null) ...[
-                    Text(
-                      'Үүсгэсэн:',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '${event.organizer!.name} (${event.organizer!.department})',
-                      style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
-                    ),
-                    SizedBox(height: 12),
-                  ],
-                  if (event.attendees.isNotEmpty) ...[
-                    Text(
-                      'Оролцогч (${event.attendees.length}/${event.maxAttendees}):',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    ),
-                    SizedBox(height: 4),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      children: event.attendees.map((attendee) => Chip(
-                        label: Text(
-                          attendee.name,
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                        padding: EdgeInsets.zero,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      )).toList(),
-                    ),
-                    SizedBox(height: 12),
-                  ],
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                title: Text(
+                  event.title,
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${event.time} • ${_getEventTypeDisplay(event.type)}'),
+                    if (event.location.isNotEmpty)
                       Text(
-                        'Хугацаа: ${_calculateDuration(event.startDate, event.endDate)}',
-                        style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                        '${event.location}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
-                      if (event.isActive)
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.green.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            'Идэвхтэй',
+                  ],
+                ),
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (event.description.isNotEmpty) ...[
+                          Text(
+                            'Тайлбар:',
                             style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.green,
                               fontWeight: FontWeight.bold,
+                              fontSize: 14,
                             ),
                           ),
+                          SizedBox(height: 4),
+                          Text(
+                            event.description,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                        ],
+                        if (event.organizer != null) ...[
+                          Text(
+                            'Үүсгэсэн:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '${event.organizer!.name} (${event.organizer!.department})',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                        ],
+                        if (event.attendees.isNotEmpty) ...[
+                          Text(
+                            'Оролцогч (${event.attendees.length}/${event.maxAttendees}):',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
+                            children: event.attendees
+                                .map(
+                                  (attendee) => Chip(
+                                    label: Text(
+                                      attendee.name,
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    backgroundColor: Theme.of(
+                                      context,
+                                    ).primaryColor.withOpacity(0.1),
+                                    padding: EdgeInsets.zero,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                          SizedBox(height: 12),
+                        ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Хугацаа: ${_calculateDuration(event.startDate, event.endDate)}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                            if (event.isActive)
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'Идэвхтэй',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      )).toList(),
+          )
+          .toList(),
     );
   }
-  
+
   String _calculateDuration(DateTime start, DateTime end) {
     final duration = end.difference(start);
     if (duration.inHours < 1) {
@@ -529,7 +578,7 @@ class _SchedulePageState extends State<SchedulePage> {
       return '${duration.inHours} цаг';
     }
   }
-  
+
   void _showAddEventDialog(BuildContext context) {
     final primaryColor = const Color(0xFF24A1DE);
 
@@ -568,12 +617,15 @@ class _SchedulePageState extends State<SchedulePage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  items: ['meeting', 'workshop', 'conference', 'training', 'other']
-                      .map((type) => DropdownMenuItem(
-                            value: type,
-                            child: Text(_getEventTypeDisplay(type)),
-                          ))
-                      .toList(),
+                  items:
+                      ['meeting', 'workshop', 'conference', 'training', 'other']
+                          .map(
+                            (type) => DropdownMenuItem(
+                              value: type,
+                              child: Text(_getEventTypeDisplay(type)),
+                            ),
+                          )
+                          .toList(),
                   onChanged: (value) {
                     setState(() {
                       selectedType = value!;
@@ -624,46 +676,45 @@ class _SchedulePageState extends State<SchedulePage> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-  isExpanded: true,
-  decoration: InputDecoration(
-    labelText: 'Оролцогчид',
-    prefixIcon: Icon(Icons.people, color: primaryColor),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-  ),
-  items: users.map((user) {
-    return DropdownMenuItem<String>(
-      value: user['_id'],
-      child: Text(user['name']),
-    );
-  }).toList(),
-  onChanged: (value) {
-    if (value != null && !selectedAttendees.contains(value)) {
-      setState(() {
-        selectedAttendees.add(value);
-      });
-    }
-  },
-),
-const SizedBox(height: 8),
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: 'Оролцогчид',
+                    prefixIcon: Icon(Icons.people, color: primaryColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  items: users.map((user) {
+                    return DropdownMenuItem<String>(
+                      value: user['_id'],
+                      child: Text(user['name']),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null && !selectedAttendees.contains(value)) {
+                      setState(() {
+                        selectedAttendees.add(value);
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 8),
 
-// Show selected attendees as chips
-Wrap(
-  spacing: 6,
-  children: selectedAttendees.map((id) {
-    final user = users.firstWhere((u) => u['_id'] == id);
-    return Chip(
-      label: Text(user['name']),
-      onDeleted: () {
-        setState(() {
-          selectedAttendees.remove(id);
-        });
-      },
-    );
-  }).toList(),
-),
-
+                // Show selected attendees as chips
+                Wrap(
+                  spacing: 6,
+                  children: selectedAttendees.map((id) {
+                    final user = users.firstWhere((u) => u['_id'] == id);
+                    return Chip(
+                      label: Text(user['name']),
+                      onDeleted: () {
+                        setState(() {
+                          selectedAttendees.remove(id);
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
 
                 // Description
                 TextFormField(
@@ -709,7 +760,7 @@ Wrap(
       },
     );
   }
-  
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -719,9 +770,7 @@ Wrap(
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Color(0xFF24A1DE),
-            ),
+            colorScheme: ColorScheme.light(primary: Color(0xFF24A1DE)),
           ),
           child: child!,
         );
@@ -734,7 +783,7 @@ Wrap(
       });
     }
   }
-  
+
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -742,9 +791,7 @@ Wrap(
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Color(0xFF24A1DE),
-            ),
+            colorScheme: ColorScheme.light(primary: Color(0xFF24A1DE)),
           ),
           child: child!,
         );
@@ -756,78 +803,76 @@ Wrap(
       });
     }
   }
-  
+
   Future<void> _addEvent() async {
-  if (titleController.text.isEmpty || descriptionController.text.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please fill in all required fields'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
-  }
-
-  final date = _selectedDay ?? _focusedDay;
-  final startDateTime = DateTime(
-    date.year,
-    date.month,
-    date.day,
-    selectedTime.hour,
-    selectedTime.minute,
-  );
-
-  final endDateTime = startDateTime.add(const Duration(hours: 1));
-
-  try {
-    final response = await http.post(
-      Uri.parse('http://10.150.10.17:5000/api/events'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        "title": titleController.text,
-        "description": descriptionController.text,
-        "eventType": selectedType,
-        "startDate": startDateTime.toUtc().toIso8601String(),
-        "endDate": endDateTime.toUtc().toIso8601String(),
-        "location": "7 давхар", // replace with real input later
-        "organizer": "66f3b8b8f8d0c23ad0a12345", // replace with actual logged-in user id
-        "attendees": selectedAttendees,
-        "maxAttendees": 10,
-        "isActive": true,
-      }),
-    );
-
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      // Successfully added
+    if (titleController.text.isEmpty || descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Event added successfully'),
-          backgroundColor: Colors.green,
+          content: Text('Please fill in all required fields'),
+          backgroundColor: Colors.red,
         ),
       );
-
-      // Refresh event list from API
-      _fetchEvents();
-
-      // Clear form
-      titleController.clear();
-      descriptionController.clear();
-    } else {
-      throw Exception('Failed to add event: ${response.body}');
+      return;
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Error adding event: $e'),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-}
 
-  
+    final date = _selectedDay ?? _focusedDay;
+    final startDateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      selectedTime.hour,
+      selectedTime.minute,
+    );
+
+    final endDateTime = startDateTime.add(const Duration(hours: 1));
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.150.10.17:5000/api/events'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "title": titleController.text,
+          "description": descriptionController.text,
+          "eventType": selectedType,
+          "startDate": startDateTime.toUtc().toIso8601String(),
+          "endDate": endDateTime.toUtc().toIso8601String(),
+          "location": "7 давхар", // replace with real input later
+          "organizer":
+              "66f3b8b8f8d0c23ad0a12345", // replace with actual logged-in user id
+          "attendees": selectedAttendees,
+          "maxAttendees": 10,
+          "isActive": true,
+        }),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        // Successfully added
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Event added successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Refresh event list from API
+        _fetchEvents();
+
+        // Clear form
+        titleController.clear();
+        descriptionController.clear();
+      } else {
+        throw Exception('Failed to add event: ${response.body}');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error adding event: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Color _getEventColor(String type) {
     switch (type.toLowerCase()) {
       case 'meeting':
@@ -842,7 +887,7 @@ Wrap(
         return Colors.grey;
     }
   }
-  
+
   IconData _getEventIcon(String type) {
     switch (type.toLowerCase()) {
       case 'meeting':
@@ -857,7 +902,7 @@ Wrap(
         return Icons.event;
     }
   }
-  
+
   String _getEventTypeDisplay(String type) {
     switch (type.toLowerCase()) {
       case 'meeting':
@@ -872,7 +917,7 @@ Wrap(
         return 'Бусад';
     }
   }
-  
+
   String _getMongolianMonth(int month) {
     const months = [
       'Нэгдүгээр сар',
@@ -890,7 +935,7 @@ Wrap(
     ];
     return months[month - 1];
   }
-  
+
   String _getMongolianWeekday(DateTime day) {
     const weekdays = ['Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя', 'Ня'];
     return weekdays[day.weekday - 1];
@@ -911,7 +956,7 @@ class Event {
   final List<Attendee> attendees;
   final int maxAttendees;
   final bool isActive;
-  
+
   Event({
     required this.id,
     required this.title,
@@ -926,7 +971,7 @@ class Event {
     required this.maxAttendees,
     required this.isActive,
   });
-  
+
   @override
   String toString() => title;
 }
@@ -937,14 +982,14 @@ class Organizer {
   final String name;
   final String email;
   final String department;
-  
+
   Organizer({
     required this.id,
     required this.name,
     required this.email,
     required this.department,
   });
-  
+
   factory Organizer.fromJson(Map<String, dynamic> json) {
     return Organizer(
       id: json['_id'],
@@ -961,14 +1006,14 @@ class Attendee {
   final String name;
   final String email;
   final String department;
-  
+
   Attendee({
     required this.id,
     required this.name,
     required this.email,
     required this.department,
   });
-  
+
   factory Attendee.fromJson(Map<String, dynamic> json) {
     return Attendee(
       id: json['_id'],

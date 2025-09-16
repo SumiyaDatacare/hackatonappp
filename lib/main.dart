@@ -3,6 +3,7 @@ import 'splash_screen.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
 import 'screens/schedule.dart';
+import 'screens/mydiscount.dart';
 import 'screens/planning.dart';
 import 'screens/daily.dart';
 import 'screens/newbie.dart';
@@ -32,6 +33,7 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
         '/schedule': (context) => SchedulePage(),
+        '/mydiscount': (context) => Mydiscount(),
         '/planning': (context) => PlanningPage(),
         '/daily': (context) => DailyPage(),
         '/newbie': (context) => NewbiePage(),
