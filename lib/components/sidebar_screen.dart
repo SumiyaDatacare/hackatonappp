@@ -154,7 +154,7 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
                       ),
                       SubMenuItem(
                         title: 'Ажлын хуваарь',
-                        route: '/assets/work-schedule',
+                        route: '/schedule',
                       ),
                       SubMenuItem(
                         title: 'Мэдэгдлүүд',
