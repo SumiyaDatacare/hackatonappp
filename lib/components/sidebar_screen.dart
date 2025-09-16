@@ -66,13 +66,14 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 children: [
-                  // Reports - Simple menu
-                  // _buildSimpleMenuItem(
-                  //   icon: Icons.bar_chart_outlined,
-                  //   title: 'Reports',
-                  //   isSelected: widget.currentRoute == '/reports',
-                  //   route: '/reports',
-                  // ),
+                  //Reports - Simple menu
+                  _buildSimpleMenuItem(
+                    icon: Icons.bar_chart_outlined,
+                    iconColor: Color(0xFF4285F4),
+                    title: 'Нүүр хуудас',
+                    isSelected: widget.currentRoute == '/reports',
+                    route: '/lib/screens/login.dart',
+                  ),
                   SizedBox(height: 4),
                   // Strategies with submenu - Blue
                   _buildMenuItemWithSubmenu(
@@ -162,6 +163,25 @@ class _SidebarDrawerState extends State<SidebarDrawer> {
                       ),
                     ],
                   ),
+
+                  ListTile(
+                    leading: Icon(
+                      Icons.logout,
+                      color: Color(0xFF4285F4),
+                      size: 22,
+                    ),
+                    title: Text(
+                      'Гарах',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                  ),
+                  SizedBox(height: 20),
                 ],
               ),
             ),
